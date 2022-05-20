@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/Sitnikksl/telegramManagerBot#readme",
   "dependencies": {
-    "nodemon": "^2.0.16",
-    "telegram-node-bot-api": "^0.0.1"
+    "node-telegram-bot-api": "^0.57.0",
+    "nodemon": "^2.0.16"
   }
 }
