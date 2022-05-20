@@ -1,0 +1,20 @@
+{
+  "name": "telegrammanagerbot",
+  "version": "1.0.0",
+  "description": "Bot fo managment",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sitnikksl/telegramManagerBot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sitnikksl/telegramManagerBot/issues"
+  },
+  "homepage": "https://github.com/Sitnikksl/telegramManagerBot#readme"
+}
