@@ -2,19 +2,10 @@ const TelegramApi = require('node-telegram-bot-api')
 const { options } = require('nodemon/lib/config')
 const command = require('nodemon/lib/config/command')
 const token = '5382418564:AAFTOBZyq4UFUCpwBRPVGxrxdkOFeOvEcKE'
-
 const bot = new TelegramApi(token, {polling: true})
 
-/*
-const linksButtons = {
-    reply_markup: JSON.stringify({
-        inline_keyboard: [
-            [{text: 'Рентабельность', callback_data: profitLink}, {text: 'Notion', callback_data: '2 '}],
-            [{text: 'Рентабельность', callback_data: '1 '}, {text: 'Notion', callback_data: '2 '}]
-        ]
-    })
-}
-*/
+let time = null;
+let vacationList = 'Список отпусков еще не сформирован 😢'
 
 const start = () =>{
 
@@ -29,6 +20,14 @@ const start = () =>{
         const text = msg.text;
         const chatId = msg.chat.id;
         
+        setInterval(() => {
+            time = new Date().toLocaleTimeString()
+            console.log(time);
+            if(time === '9:00:00 AM'){
+                bot.sendMessage(chatId, vacationList);
+            }
+            }, 10000);
+
         if(text === '/start'){
            await bot.sendMessage(chatId, 'Добро пожаловать! Это менеджерский бот, с помощью которого ты сможешь делать много клевых и продуктивных вещей!');
            await bot.sendSticker(chatId, 'https://tlgrm.ru/_/stickers/5a7/cb3/5a7cb3d0-bca6-3459-a3f0-5745d95d54b7/1.webp');
@@ -60,8 +59,7 @@ const start = () =>{
         } else
         if(text === '/id'){
             bot.sendMessage(chatId, chatId)
-        }
-        else{
+        }else{
             return bot.sendMessage(chatId, 'Я не понимаю что значит ' + ' "' + text + '", ' + 'давай ещё раз!');
         }
     })
