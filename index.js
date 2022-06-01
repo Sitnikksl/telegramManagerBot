@@ -1,13 +1,80 @@
-const TelegramApi = require('node-telegram-bot-api')
-const { options } = require('nodemon/lib/config')
-const command = require('nodemon/lib/config/command')
-const token = '5382418564:AAFTOBZyq4UFUCpwBRPVGxrxdkOFeOvEcKE'
+import fetch from "node-fetch";
+import TelegramApi from "node-telegram-bot-api";
+//const { options } = require('nodemon/lib/config')
+//const command = require('nodemon/lib/config/command')
+const token = '5533043131:AAGVDRGDqRXehNfULaMJyEnW_Aea8z8syGk'
 const bot = new TelegramApi(token, {polling: true})
 
+
 let time = null;
-let vacationList = 'Список отпусков еще не сформирован 😢'
+let vacationList = '';
+let todayMounth;
+let today = '';
+let startDay = '';
+let endDay = '';
 
+const getMounth = () =>{
+    todayMounth = new Date().toLocaleDateString();
+    for(let char of todayMounth){
+        if(char === '/'){
+            break;
+        }
+        today += char;
+    }
+    return today;
+}
+getMounth();
+const req = () =>{
+    const url = 'https://script.google.com/macros/s/AKfycbzT0D0WAbDIR5WjDi-OrKSH72F05MfA6BH10p14SlUneCIiIc641WVX10BtMV-xfxQzWg/exec';
+    const vacationTable = fetch(url).then(response =>response.json()).then(arr =>{
+        // console.log(arr.users);
+        let userNames = [];
+        let userFirstDays = [];
+        let userMounth = [];
+        for(let i = 0; i<arr.users.length; i++){
+            let addName = arr.users[i].Name;
+            userNames.push(addName); 
+        }
+        for(let i = 0; i<arr.users.length; i++){
+            let addFirstDay = arr.users[i].FirstDay;
+            
+            userFirstDays.push(addFirstDay); 
+        }
+        for(let i = 0; i<arr.users.length; i++){
+            let addMounth = arr.users[i].Mounth;
+            userMounth.push(addMounth)
+        }
+        console.log('Количество строк в таблице: ' + arr.users.length);
+        vacationList = '';
+        for(let i = 0; i<arr.users.length; i++){
+            if(arr.users[i].Mounth.toString().includes(today || today[1])){
+                
+                for(let char of arr.users[i].FirstDay){
+                    if(char === 'T'){
+                        break;
+                    }
+                    startDay+= char;
+                }
+                for(let char of arr.users[i].LastDay){
+                    if(char === 'T'){
+                        break;
+                    }
+                    endDay+= char;
+                }
+                vacationList += '📌' + arr.users[i].Name + '\n' 
+                + 'Начало: ' + startDay + '\n' 
+                + 'Окончание: ' + endDay + '\n' 
+                + 'Всего дней: ' + arr.users[i].CountDay +'\n'+'\n';
+                startDay = '';
+                endDay = '';
+            }
+        }
+    });
+}
 
+setInterval(() => {
+    req();
+}, 1000);
 
 const start = () =>{
 
@@ -56,13 +123,11 @@ const start = () =>{
             '[📌 Доска Project Managment](http://www.example.com/)', {parse_mode: 'Markdown'})
         
         } else
-        if(text === '/vacation'){
-            bot.sendMessage(chatId, 'Тут я напишу тебе отпуски')
+        if(text === '/vacation'){            
+            bot.sendMessage(chatId, '🪴 Отпуски в этом месяце: ' + '\n' + '\n' + vacationList + '\n')
         } else
         if(text === '/id'){
             bot.sendMessage(chatId, chatId)
-        }else if(text === '/url'){
-              
         }
         else{
             return bot.sendMessage(chatId, 'Я не понимаю что значит ' + ' "' + text + '", ' + 'давай ещё раз!');
@@ -70,11 +135,4 @@ const start = () =>{
     })
 
 } 
-start ()
-const req = () =>{
-    const url = 'https://script.google.com/macros/s/AKfycbxtFdnTS8HilWKE9BEd6KTsxw5YTlU34T15JUpAWIEnpGjmSRkwxoWhLtCWVkAWJ7rgSw/exec';
-    const temp = fetch(url).then(response =>response.json()).then(arr =>console.log(arr.users));
-      
-}
-req();
-         
+start ()   
