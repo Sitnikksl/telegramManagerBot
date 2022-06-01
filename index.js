@@ -7,6 +7,8 @@ const bot = new TelegramApi(token, {polling: true})
 let time = null;
 let vacationList = 'Список отпусков еще не сформирован 😢'
 
+
+
 const start = () =>{
 
     bot.setMyCommands([
@@ -59,10 +61,20 @@ const start = () =>{
         } else
         if(text === '/id'){
             bot.sendMessage(chatId, chatId)
-        }else{
+        }else if(text === '/url'){
+              
+        }
+        else{
             return bot.sendMessage(chatId, 'Я не понимаю что значит ' + ' "' + text + '", ' + 'давай ещё раз!');
         }
     })
 
 } 
 start ()
+const req = () =>{
+    const url = 'https://script.google.com/macros/s/AKfycbxtFdnTS8HilWKE9BEd6KTsxw5YTlU34T15JUpAWIEnpGjmSRkwxoWhLtCWVkAWJ7rgSw/exec';
+    const temp = fetch(url).then(response =>response.json()).then(arr =>console.log(arr.users));
+      
+}
+req();
+         
