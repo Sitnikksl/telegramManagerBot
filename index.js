@@ -35,7 +35,7 @@ const req = () =>{
             let addName = arr.users[i].Name;
             userNames.push(addName); 
         }
-        for(let i = 0; i<arr.users.length; i++){
+        for(let i = 1; i<arr.users.length; i++){
             let addFirstDay = arr.users[i].FirstDay;
             
             userFirstDays.push(addFirstDay); 
@@ -44,7 +44,7 @@ const req = () =>{
             let addMounth = arr.users[i].Mounth;
             userMounth.push(addMounth)
         }
-        console.log('Количество строк в таблице: ' + arr.users.length);
+        // console.log('Количество строк в таблице: ' + arr.users.length);
         vacationList = '';
         for(let i = 0; i<arr.users.length; i++){
             if(arr.users[i].Mounth.toString().includes(today || today[1])){
@@ -64,6 +64,7 @@ const req = () =>{
                 vacationList += '📌' + arr.users[i].Name + '\n' 
                 + 'Начало: ' + startDay + '\n' 
                 + 'Окончание: ' + endDay + '\n' 
+                + 'Комментарий: ' + arr.users[i].Comment + '\n' 
                 + 'Всего дней: ' + arr.users[i].CountDay +'\n'+'\n';
                 startDay = '';
                 endDay = '';
@@ -74,7 +75,7 @@ const req = () =>{
 
 setInterval(() => {
     req();
-}, 1000);
+}, 10000);
 
 const start = () =>{
 
@@ -91,11 +92,11 @@ const start = () =>{
         
         setInterval(() => {
             time = new Date().toLocaleTimeString()
-            console.log(time);
-            if(time === '9:00:00 AM'){
+            // console.log(time);
+            if(time === '1:13:30 AM'){
                 bot.sendMessage(chatId, vacationList);
             }
-            }, 10000);
+            }, 1000);
 
         if(text === '/start'){
            await bot.sendMessage(chatId, 'Добро пожаловать! Это менеджерский бот, с помощью которого ты сможешь делать много клевых и продуктивных вещей!');
@@ -111,7 +112,6 @@ const start = () =>{
         } else
 
         if(text === '/info'){
-            await bot.sendMessage(chatId, 'Всё можно, нихуя нельзя!' + '\n' + '© Лёха Панасюк')
             //return bot.sendMessage(chatId, '[inline URL](http://www.example.com/)', {parse_mode: 'Markdown'})
             await bot.sendMessage(chatId, '/links – полезные ссылки' + '\n' + 
             '/vacation - отпуски месяца')
@@ -119,12 +119,12 @@ const start = () =>{
 
         if(text === '/links'){
             await bot.sendMessage(chatId,  'Полезные ссылки: ' + '\n' + '[📌 Дашборд рентабельности](https://docs.google.com/spreadsheets/d/1zacVstpRrZw4A-gIHL1V5uoax27O9-wZDfMnHuThUKs/edit?usp=sharing)' + 
-            '\n' + '[📌 Менеджерский Notion](http://www.example.com/)' + '\n' + 
-            '[📌 Доска Project Managment](http://www.example.com/)', {parse_mode: 'Markdown'})
+            '\n' + '[📌 Менеджерский Notion](https://pmtsdgn.notion.site/PM-TDSGN-f8645b701f104ecd9cafd158f2019e7c)' + '\n' + 
+            '[📌 Доска Project Managment](https://crmcraft.ru/?controller=BoardViewController&action=show&project_id=280)', {parse_mode: 'Markdown'})
         
         } else
         if(text === '/vacation'){            
-            bot.sendMessage(chatId, '🪴 Отпуски в этом месяце: ' + '\n' + '\n' + vacationList + '\n')
+            bot.sendMessage(chatId, '🪴 Отпуски в этом месяце: ' + '\n' + '\n' + vacationList + '⚠️ Учти это в своих проектах!')
         } else
         if(text === '/id'){
             bot.sendMessage(chatId, chatId)
