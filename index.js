@@ -75,7 +75,7 @@ const req = () =>{
 
 setInterval(() => {
     req();
-}, 10000);
+}, 100000);
 
 const start = () =>{
 
