@@ -5,7 +5,6 @@ import TelegramApi from "node-telegram-bot-api";
 const token = '5533043131:AAGVDRGDqRXehNfULaMJyEnW_Aea8z8syGk'
 const bot = new TelegramApi(token, {polling: true})
 
-app.listen(process.env.PORT || 3000);
 let time = null;
 let vacationList = '';
 let todayMounth;
