@@ -74,8 +74,12 @@ const req = () =>{
 }
 
 setInterval(() => {
-    req();
-}, 100000);
+    try {
+        req();
+    } catch (error) {
+        console.log('Вот ошибка: ' + error);
+    }
+}, 1000);
 
 const start = () =>{
 
