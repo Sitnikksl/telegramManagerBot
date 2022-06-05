@@ -79,7 +79,7 @@ setInterval(() => {
     } catch (error) {
         console.log('Вот ошибка: ' + error);
     }
-}, 1000);
+}, 86400000);
 
 const start = () =>{
 
