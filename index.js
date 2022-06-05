@@ -5,7 +5,7 @@ import TelegramApi from "node-telegram-bot-api";
 const token = '5533043131:AAGVDRGDqRXehNfULaMJyEnW_Aea8z8syGk'
 const bot = new TelegramApi(token, {polling: true})
 
-
+app.listen(process.env.PORT || 3000);
 let time = null;
 let vacationList = '';
 let todayMounth;
@@ -97,10 +97,10 @@ const start = () =>{
         setInterval(() => {
             time = new Date().toLocaleTimeString()
             // console.log(time);
-            if(time === '1:13:30 AM'){
+            if(time === '10:00:00 AM'){
                 bot.sendMessage(chatId, vacationList);
             }
-            }, 1000);
+            }, 10000);
 
         if(text === '/start'){
            await bot.sendMessage(chatId, 'Добро пожаловать! Это менеджерский бот, с помощью которого ты сможешь делать много клевых и продуктивных вещей!');
