@@ -7,8 +7,12 @@ const bot = new TelegramApi(token, {polling: true})
 
 let time = null;
 let vacationList = '';
+let distantList = '';
 let todayMounth;
 let today = '';
+let todayDay = '';
+let Day = '';
+let dayBalance = '';
 let startDay = '';
 let endDay = '';
 
@@ -22,8 +26,14 @@ const getMounth = () =>{
     }
     return today;
 }
+const getDay = () =>{
+    todayDay = new Date();
+    Day = todayDay.getDate();
+    return Day;
+}
+getDay();
 getMounth();
-const req = () =>{
+const reqVacation = () =>{
     const url = 'https://script.google.com/macros/s/AKfycbzT0D0WAbDIR5WjDi-OrKSH72F05MfA6BH10p14SlUneCIiIc641WVX10BtMV-xfxQzWg/exec';
     const vacationTable = fetch(url).then(response =>response.json()).then(arr =>{
         // console.log(arr.users);
@@ -72,13 +82,37 @@ const req = () =>{
     });
 }
 
+
+const reqDistant = () =>{
+    const urlDistant = 'https://script.google.com/macros/s/AKfycbyn-Nh51jN85k0iqk9RMG2aXy_cJkW4LjJQltZSwJ5m8Vjvvx0MMqMqCFzrBdVhggeAgw/exec';
+    const distantTable = fetch(urlDistant).then(response =>response.json()).then(arr =>{
+        distantList = '';
+        dayBalance = '';
+        for(let i=0; i<arr.users.length; i++){
+            if(arr.users[i].FirstDay.toString() == Day || arr.users[i].SecondDay.toString() == Day || arr.users[i].ThirdDay.toString() == Day){
+                distantList += '📍' + arr.users[i].Name + '\n'
+                + 'Дней осталось: ' + arr.users[i].Remainder + '\n' + '\n';
+            }
+            if(arr.users[i].Remainder.toString() == 0){
+                dayBalance+= '🙅🏼‍♂️ ' + arr.users[i].Name + '\n';
+            }
+        }
+        if(dayBalance != ''){
+            distantList += 'Не осталось удалёнки у: ' + '\n';
+        }
+        if(distantList == ''){
+            distantList = 'Никого! Все в офисе!';
+        }
+    });
+}
 setInterval(() => {
     try {
-        req();
+        reqVacation();
+        reqDistant();
     } catch (error) {
         console.log('Вот ошибка: ' + error);
     }
-}, 86400000);
+}, 3600000);
 
 const start = () =>{
 
@@ -86,7 +120,8 @@ const start = () =>{
         {command: '/start', description: 'Команда старта'},
         {command: '/info', description: 'Узнать что можно'},
         {command: '/links', description: 'Полезные ссылки'},
-        {command: '/vacation', description: 'Отпуски месяца'}
+        {command: '/vacation', description: 'Отпуски месяца'},
+        {command: '/distant', description: 'Кто на удалёнке'},
     ])
     
     bot.on('message', async msg=>{
@@ -117,18 +152,22 @@ const start = () =>{
         if(text === '/info'){
             //return bot.sendMessage(chatId, '[inline URL](http://www.example.com/)', {parse_mode: 'Markdown'})
             await bot.sendMessage(chatId, '/links – полезные ссылки' + '\n' + 
-            '/vacation - отпуски месяца')
+            '/vacation - отпуски месяца' + '\n' + '/distant – узнать кто сегодня на удалёнке')
         } else
 
         if(text === '/links'){
-            await bot.sendMessage(chatId,  'Полезные ссылки: ' + '\n' + '[📌 Дашборд рентабельности](https://docs.google.com/spreadsheets/d/1zacVstpRrZw4A-gIHL1V5uoax27O9-wZDfMnHuThUKs/edit?usp=sharing)' + 
+            await bot.sendMessage(chatId,  'Полезные ссылки: ' + '\n' + 
             '\n' + '[📌 Менеджерский Notion](https://pmtsdgn.notion.site/PM-TDSGN-f8645b701f104ecd9cafd158f2019e7c)' + '\n' + 
+            '[📌 Распределение проектов](https://docs.google.com/spreadsheets/d/1Tp3YDbWx0hi20V0MWSL2nWUqkUNvrogFU0oIFBL9nFQ/edit#gid=1281336763)' + '\n' +
+            '[📌 Документы по проектам](https://drive.google.com/drive/u/0/folders/100Tlw-sNlirq1NVuHfjbFcNSJYczViOW)' + '\n' +
             '[📌 Доска Project Managment](https://crmcraft.ru/?controller=BoardViewController&action=show&project_id=280)', {parse_mode: 'Markdown'})
         
         } else
         if(text === '/vacation'){            
             bot.sendMessage(chatId, '🪴 Отпуски в этом месяце: ' + '\n' + '\n' + vacationList + '⚠️ Учти это в своих проектах!')
-        } else
+        } else if(text === '/distant'){            
+            bot.sendMessage(chatId, '🏠 Сегодня на удалёнке: ' + '\n' + '\n' + distantList + '\n' + dayBalance)
+        }else
         if(text === '/id'){
             bot.sendMessage(chatId, chatId)
         }
